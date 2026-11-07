@@ -1,0 +1,44 @@
+@model List<Order>
+@{
+    ViewData["Title"] = "Поръчки";
+
+    string StatusLabel(OrderStatus s) => s switch
+    {
+        OrderStatus.Pending => "Изчаква плащане",
+        OrderStatus.Paid => "Платена",
+        OrderStatus.Shipped => "Изпратена",
+        OrderStatus.Delivered => "Доставена",
+        OrderStatus.Cancelled => "Отказана",
+        _ => s.ToString(),
+    };
+}
+
+<h1 class="admin-title">Поръчки</h1>
+
+<div class="admin-table-wrap">
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Поръчка</th>
+                <th>Клиент</th>
+                <th>Продукти</th>
+                <th>Сума</th>
+                <th>Статус</th>
+                <th>Дата</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var o in Model)
+            {
+                <tr>
+                    <td><a asp-action="Details" asp-route-id="@o.Id" class="font-monospace small">@o.Id</a></td>
+                    <td>@o.User.FullName</td>
+                    <td>@o.Items.Count</td>
+                    <td class="fw-bold">@o.Total.ToString("N2") €</td>
+                    <td><span class="badge-outline">@StatusLabel(o.Status)</span></td>
+                    <td class="text-muted">@o.CreatedAt.ToString("dd.MM.yyyy")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

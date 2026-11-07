@@ -1,0 +1,63 @@
+@inject PitstopWeb.Services.CartService Cart
+@{
+    var cartCount = Cart.TotalItems();
+    var categories = new (string Label, string Slug)[]
+    {
+        ("Спирачки", "spirachki"),
+        ("Окачване", "okachvane"),
+        ("Филтри", "filtri"),
+        ("Двигател", "dvigatel"),
+        ("Електрика", "elektrika"),
+        ("Тунинг", "tuning"),
+    };
+}
+
+<header class="site-header">
+    <div class="site-header-top">
+        <a asp-controller="Home" asp-action="Index" class="brand-logo">PIT<span class="text-brand">STOP</span></a>
+
+        <form asp-controller="Products" asp-action="Index" method="get" class="site-search">
+            <input type="text" name="q" placeholder="Търси авточаст, марка, модел..." />
+        </form>
+
+        <div class="site-header-actions">
+            <a asp-controller="Cart" asp-action="Index" class="icon-link" aria-label="Количка">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                @if (cartCount > 0)
+                {
+                    <span class="cart-badge">@cartCount</span>
+                }
+            </a>
+
+            @if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                if (User.IsInRole("Admin"))
+                {
+                    <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="icon-link" title="Админ панел">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                    </a>
+                }
+                <a asp-controller="Account" asp-action="Profile" class="icon-link" title="Моят акаунт">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                </a>
+                <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                    <button type="submit" class="icon-link icon-button" title="Изход">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                    </button>
+                </form>
+            }
+            else
+            {
+                <a asp-controller="Account" asp-action="Login" class="btn btn-brand btn-sm">Вход</a>
+            }
+        </div>
+    </div>
+
+    <nav class="site-header-nav">
+        <a asp-controller="Products" asp-action="Index">Всички продукти</a>
+        @foreach (var c in categories)
+        {
+            <a asp-controller="Products" asp-action="Index" asp-route-category="@c.Slug">@c.Label</a>
+        }
+    </nav>
+</header>

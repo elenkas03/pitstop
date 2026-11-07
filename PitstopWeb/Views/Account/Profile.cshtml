@@ -1,0 +1,27 @@
+@model PitstopWeb.Models.ApplicationUser
+@{
+    ViewData["Title"] = "Моят акаунт";
+}
+
+<div class="page-narrow">
+    <h1 class="section-title">Моят акаунт</h1>
+
+    <div class="info-card">
+        <div class="info-label">Име</div>
+        <div class="info-value">@Model.FullName</div>
+
+        <div class="info-label">Имейл</div>
+        <div class="info-value">@Model.Email</div>
+
+        <div class="info-label">Роля</div>
+        <div class="info-value">@ViewBag.Role</div>
+    </div>
+
+    <div class="info-card d-flex justify-content-between align-items-center">
+        <div>
+            <div class="fw-semibold">История на поръчките</div>
+            <div class="text-muted small">@ViewBag.OrderCount поръчки досега</div>
+        </div>
+        <a asp-action="Orders" class="btn btn-outline-brand">Виж поръчките</a>
+    </div>
+</div>

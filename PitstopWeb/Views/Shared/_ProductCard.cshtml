@@ -1,0 +1,36 @@
+@model Product
+@{
+    var image = Model.Images.FirstOrDefault();
+}
+
+<div class="product-card">
+    <a asp-controller="Products" asp-action="Details" asp-route-slug="@Model.Slug" class="product-card-image">
+        @if (Model.IsFeatured)
+        {
+            <span class="badge-brand product-card-badge">Ново</span>
+        }
+        @if (image != null)
+        {
+            <img src="@image" alt="@Model.Name" loading="lazy" />
+        }
+        else
+        {
+            <div class="product-card-noimage">Няма снимка</div>
+        }
+    </a>
+
+    <div class="product-card-body">
+        <span class="product-card-brand">@Model.Brand</span>
+        <a asp-controller="Products" asp-action="Details" asp-route-slug="@Model.Slug" class="product-card-name">@Model.Name</a>
+        <div class="product-card-price">@Model.Price.ToString("N2") €</div>
+
+        <form asp-controller="Cart" asp-action="Add" method="post" class="mt-2">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="productId" value="@Model.Id" />
+            <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
+            <button type="submit" class="btn btn-brand w-100" @(Model.Stock <= 0 ? "disabled" : "")>
+                @(Model.Stock <= 0 ? "Изчерпано" : "Добави в количката")
+            </button>
+        </form>
+    </div>
+</div>

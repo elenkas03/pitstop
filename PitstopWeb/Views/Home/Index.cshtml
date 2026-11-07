@@ -1,0 +1,71 @@
+@model List<Product>
+@{
+    ViewData["Title"] = "Онлайн магазин за авточасти";
+
+    var categories = new (string Label, string Slug, string Image)[]
+    {
+        ("Спирачки", "spirachki", "/img/nakladki-brembo-sport.jpg"),
+        ("Фарове", "farove", "/img/far-osram-nightbreaker.jpg"),
+        ("Окачване", "okachvane", "/img/amortisyor-bilstein-b4.jpg"),
+        ("Филтри", "filtri", "/img/vazdushen-filtar-kn.jpg"),
+        ("Двигател", "dvigatel", "/img/turbo-garrett.jpg"),
+        ("Електрика", "elektrika", "/img/akumulator-varta-60ah.jpg"),
+        ("Тунинг", "tuning", "/img/auspuh-fk-duplex.jpg"),
+        ("Джанти", "dzhanti", "/img/dzhanti-alutec-17.jpg"),
+    };
+}
+
+<section class="hero">
+    <img src="/img/logo.png" alt="PITSTOP Auto Parts" class="hero-bg-logo" />
+    <div class="hero-inner">
+        <p class="hero-eyebrow">PITSTOP авточасти</p>
+        <h1 class="hero-title">Твоята кола е в <span class="text-brand">добри ръце</span></h1>
+        <p class="hero-text">Хиляди оригинални и заместващи авточасти — спирачки, окачване, филтри, електрика и още, с бърза доставка до теб.</p>
+        <a asp-controller="Products" asp-action="Index" class="btn btn-brand btn-lg mt-3">Разгледай продуктите</a>
+    </div>
+</section>
+
+<section class="category-grid-section">
+    <div class="category-grid">
+        @foreach (var c in categories)
+        {
+            <a asp-controller="Products" asp-action="Index" asp-route-category="@c.Slug" class="category-tile">
+                <span class="category-tile-thumb">
+                    <img src="@c.Image" alt="@c.Label" loading="lazy" />
+                </span>
+                <span class="category-tile-label">@c.Label</span>
+            </a>
+        }
+    </div>
+</section>
+
+<section class="why-choose">
+    <h2 class="section-title text-center">Защо <span class="text-brand">PITSTOP</span></h2>
+    <div class="why-choose-grid">
+        <div class="why-choose-item">
+            <h3>Бърза доставка</h3>
+            <p>Доставка до всяка точка в страната за 1-3 работни дни.</p>
+        </div>
+        <div class="why-choose-item">
+            <h3>Гарантирано качество</h3>
+            <p>Работим само с проверени доставчици и оригинални части.</p>
+        </div>
+        <div class="why-choose-item">
+            <h3>Експертна консултация</h3>
+            <p>Нашият екип ще ти помогне да намериш точната част за колата ти.</p>
+        </div>
+    </div>
+</section>
+
+<section class="featured-section">
+    <div class="featured-header">
+        <h2 class="section-title">Препоръчани продукти</h2>
+        <a asp-controller="Products" asp-action="Index" class="btn btn-outline-brand">Виж всички</a>
+    </div>
+    <div class="product-grid">
+        @foreach (var p in Model)
+        {
+            <partial name="_ProductCard" model="p" />
+        }
+    </div>
+</section>

@@ -1,0 +1,56 @@
+@model CheckoutViewModel
+@{
+    ViewData["Title"] = "Поръчка";
+}
+
+<div class="checkout-page">
+    <h1 class="section-title">Поръчка</h1>
+
+    <div class="checkout-grid">
+        <form asp-action="Index" method="post" class="checkout-form">
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <div class="mb-3">
+                <label asp-for="ShippingName" class="form-label"></label>
+                <input asp-for="ShippingName" class="form-control" />
+                <span asp-validation-for="ShippingName" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="ShippingAddress" class="form-label"></label>
+                <input asp-for="ShippingAddress" class="form-control" />
+                <span asp-validation-for="ShippingAddress" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="ShippingCity" class="form-label"></label>
+                <input asp-for="ShippingCity" class="form-control" />
+                <span asp-validation-for="ShippingCity" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Phone" class="form-label"></label>
+                <input asp-for="Phone" class="form-control" />
+                <span asp-validation-for="Phone" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-brand btn-lg w-100 mt-2">Плати сега</button>
+        </form>
+
+        <div class="order-summary-card">
+            <h2 class="order-summary-title">Твоята поръчка</h2>
+            @foreach (var item in Model.Items)
+            {
+                <div class="order-summary-row">
+                    <span class="text-muted">@item.Name × @item.Quantity</span>
+                    <span>@item.LineTotal.ToString("N2") €</span>
+                </div>
+            }
+            <div class="order-summary-total">
+                <span>Общо</span>
+                <span>@Model.Total.ToString("N2") €</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

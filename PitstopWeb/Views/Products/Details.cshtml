@@ -1,0 +1,69 @@
+@model Product
+@{
+    ViewData["Title"] = Model.Name;
+    var image = Model.Images.FirstOrDefault();
+}
+
+<div class="product-detail-page">
+    <div class="breadcrumbs">
+        <a asp-action="Index">Продукти</a> /
+        <a asp-action="Index" asp-route-category="@Model.Category.Slug">@Model.Category.Name</a>
+    </div>
+
+    <div class="product-detail-grid">
+        <div class="product-detail-image">
+            @if (Model.IsFeatured)
+            {
+                <span class="badge-brand product-card-badge">Ново</span>
+            }
+            @if (image != null)
+            {
+                <img src="@image" alt="@Model.Name" />
+            }
+            else
+            {
+                <div class="product-card-noimage">Няма снимка</div>
+            }
+        </div>
+
+        <div>
+            <span class="product-detail-meta">@Model.Brand · SKU: @Model.Sku</span>
+            <h1 class="product-detail-title">@Model.Name</h1>
+            <div class="product-detail-price">@Model.Price.ToString("N2") €</div>
+
+            <p class="mt-2">
+                @if (Model.Stock > 0)
+                {
+                    <span class="text-success">В наличност (@Model.Stock бр.)</span>
+                }
+                else
+                {
+                    <span class="text-danger">Изчерпано</span>
+                }
+            </p>
+
+            <p class="product-detail-description">@Model.Description</p>
+
+            <form asp-controller="Cart" asp-action="Add" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="productId" value="@Model.Id" />
+                <button type="submit" class="btn btn-brand btn-lg" @(Model.Stock <= 0 ? "disabled" : "")>
+                    @(Model.Stock <= 0 ? "Изчерпано" : "Добави в количката")
+                </button>
+            </form>
+
+            @if (Model.Compatibility.Any())
+            {
+                <div class="mt-4">
+                    <h2 class="compat-heading">Съвместими автомобили</h2>
+                    <ul class="compat-list">
+                        @foreach (var c in Model.Compatibility)
+                        {
+                            <li><span>@c.Make @c.Model</span><span>@c.YearFrom–@c.YearTo</span></li>
+                        }
+                    </ul>
+                </div>
+            }
+        </div>
+    </div>
+</div>

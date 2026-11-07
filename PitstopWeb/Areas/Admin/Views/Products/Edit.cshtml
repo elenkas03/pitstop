@@ -1,0 +1,61 @@
+@model Product
+@{
+    ViewData["Title"] = "Редакция на продукт";
+}
+
+<h1 class="admin-title">Редакция на продукт</h1>
+
+<form asp-action="Edit" asp-route-id="@Model.Id" method="post" class="admin-form">
+    <input type="hidden" asp-for="Id" />
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label">Име на продукта</label>
+        <input asp-for="Name" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label">Описание</label>
+        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label asp-for="Price" class="form-label">Цена (€)</label>
+            <input asp-for="Price" class="form-control" type="number" step="0.01" />
+        </div>
+        <div class="col-md-6 mb-3">
+            <label asp-for="Stock" class="form-label">Наличност (бр.)</label>
+            <input asp-for="Stock" class="form-control" type="number" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label asp-for="Brand" class="form-label">Марка</label>
+            <input asp-for="Brand" class="form-control" />
+        </div>
+        <div class="col-md-6 mb-3">
+            <label asp-for="Sku" class="form-label">SKU</label>
+            <input asp-for="Sku" class="form-control" />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Категория</label>
+        <select name="CategoryId" class="form-select" asp-items="@(ViewBag.Categories as List<SelectListItem>)" asp-for="CategoryId">
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Снимки (по един път на ред)</label>
+        <textarea name="imagesText" class="form-control" rows="3">@ViewBag.ImagesText</textarea>
+    </div>
+
+    <div class="form-check mb-3">
+        <input asp-for="IsFeatured" class="form-check-input" />
+        <label asp-for="IsFeatured" class="form-check-label">Препоръчан продукт (бадж "Ново")</label>
+    </div>
+
+    <button type="submit" class="btn btn-brand">Запази промените</button>
+</form>

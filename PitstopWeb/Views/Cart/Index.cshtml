@@ -1,0 +1,59 @@
+@model List<CartItem>
+@{
+    ViewData["Title"] = "Количка";
+    var total = Model.Sum(i => i.LineTotal);
+}
+
+<div class="cart-page">
+    <h1 class="section-title">Количка</h1>
+
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <h2>Количката е празна</h2>
+            <p class="text-muted">Разгледай продуктите и добави нещо в количката.</p>
+            <a asp-controller="Products" asp-action="Index" class="btn btn-brand mt-3">Към продуктите</a>
+        </div>
+    }
+    else
+    {
+        <div class="cart-list">
+            @foreach (var item in Model)
+            {
+                <div class="cart-row">
+                    <div class="cart-row-image">
+                        @if (item.Image != null)
+                        {
+                            <img src="@item.Image" alt="@item.Name" />
+                        }
+                    </div>
+                    <div class="cart-row-info">
+                        <a asp-controller="Products" asp-action="Details" asp-route-slug="@item.Slug">@item.Name</a>
+                        <div class="text-muted small">@item.Price.ToString("N2") € / бр.</div>
+                    </div>
+
+                    <form asp-action="UpdateQuantity" method="post" class="cart-qty-form">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="productId" value="@item.ProductId" />
+                        <button type="submit" name="quantity" value="@(item.Quantity - 1)" class="qty-btn" @(item.Quantity <= 1 ? "disabled" : "")>−</button>
+                        <span class="qty-value">@item.Quantity</span>
+                        <button type="submit" name="quantity" value="@(item.Quantity + 1)" class="qty-btn" @(item.Quantity >= item.Stock ? "disabled" : "")>+</button>
+                    </form>
+
+                    <div class="cart-row-total">@item.LineTotal.ToString("N2") €</div>
+
+                    <form asp-action="Remove" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="productId" value="@item.ProductId" />
+                        <button type="submit" class="remove-btn" aria-label="Премахни">✕</button>
+                    </form>
+                </div>
+            }
+        </div>
+
+        <div class="cart-summary">
+            <div class="cart-total">Общо: @total.ToString("N2") €</div>
+            <a asp-controller="Checkout" asp-action="Index" class="btn btn-brand btn-lg">Продължи към поръчка</a>
+        </div>
+    }
+</div>

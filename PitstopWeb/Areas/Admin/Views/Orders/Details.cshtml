@@ -1,0 +1,58 @@
+@model Order
+@{
+    ViewData["Title"] = "Поръчка";
+
+    var statuses = Enum.GetValues<OrderStatus>();
+    string StatusLabel(OrderStatus s) => s switch
+    {
+        OrderStatus.Pending => "Изчаква плащане",
+        OrderStatus.Paid => "Платена",
+        OrderStatus.Shipped => "Изпратена",
+        OrderStatus.Delivered => "Доставена",
+        OrderStatus.Cancelled => "Отказана",
+        _ => s.ToString(),
+    };
+}
+
+<h1 class="admin-title">Поръчка</h1>
+<p class="font-monospace text-muted mb-4">@Model.Id</p>
+
+<div class="admin-panel mb-3">
+    <h2 class="admin-panel-title">Статус</h2>
+    <form asp-action="UpdateStatus" asp-route-id="@Model.Id" method="post" class="d-flex gap-2 align-items-center">
+        @Html.AntiForgeryToken()
+        <select name="status" class="form-select form-select-sm" style="width:auto">
+            @foreach (var s in statuses)
+            {
+                <option value="@s" selected="@(s == Model.Status)">@StatusLabel(s)</option>
+            }
+        </select>
+        <button type="submit" class="btn btn-brand btn-sm">Обнови статус</button>
+    </form>
+</div>
+
+<div class="admin-panel mb-3">
+    <h2 class="admin-panel-title">Клиент</h2>
+    <div>@Model.User.FullName (@Model.User.Email)</div>
+    <div class="text-muted mt-2">
+        @Model.ShippingName<br />
+        @Model.ShippingAddress<br />
+        @Model.ShippingCity<br />
+        @Model.Phone
+    </div>
+</div>
+
+<div class="admin-panel">
+    <h2 class="admin-panel-title">Продукти</h2>
+    @foreach (var item in Model.Items)
+    {
+        <div class="order-summary-row">
+            <span class="text-muted">@item.Product.Name × @item.Quantity</span>
+            <span>@((item.PriceAtPurchase * item.Quantity).ToString("N2")) €</span>
+        </div>
+    }
+    <div class="order-summary-total">
+        <span>Общо</span>
+        <span>@Model.Total.ToString("N2") €</span>
+    </div>
+</div>

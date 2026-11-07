@@ -1,0 +1,109 @@
+@model ProductListViewModel
+@{
+    ViewData["Title"] = "Каталог с авточасти";
+}
+
+<div class="catalog-page">
+    <h1 class="section-title">Каталог с авточасти</h1>
+    <p class="catalog-subtitle">
+        Намерени @Model.Total продукта
+        @if (!string.IsNullOrWhiteSpace(Model.Filters.Q))
+        {
+            <text>за "@Model.Filters.Q"</text>
+        }
+    </p>
+
+    <div class="catalog-grid">
+        <form asp-action="Index" method="get" class="filters-panel">
+            @if (!string.IsNullOrWhiteSpace(Model.Filters.Q))
+            {
+                <input type="hidden" name="q" value="@Model.Filters.Q" />
+            }
+
+            <div class="filter-group">
+                <h3>Категория</h3>
+                <label><input type="radio" name="category" value="" checked="@(string.IsNullOrEmpty(Model.Filters.Category))" /> Всички категории</label>
+                @foreach (var c in Model.Categories)
+                {
+                    <label><input type="radio" name="category" value="@c.Slug" checked="@(Model.Filters.Category == c.Slug)" /> @c.Name</label>
+                }
+            </div>
+
+            <div class="filter-group filter-group-scroll">
+                <h3>Марка на частта</h3>
+                @foreach (var b in Model.AllBrands)
+                {
+                    <label><input type="checkbox" name="brand" value="@b" checked="@Model.Filters.Brand.Contains(b)" /> @b</label>
+                }
+            </div>
+
+            <div class="filter-group">
+                <h3>Съвместимост с автомобил</h3>
+                <select name="make" class="form-select form-select-sm mb-2">
+                    <option value="">Марка на автомобил</option>
+                    @foreach (var m in Model.AllMakes)
+                    {
+                        <option value="@m" selected="@(Model.Filters.Make == m)">@m</option>
+                    }
+                </select>
+                <input type="text" name="model" class="form-control form-control-sm mb-2" placeholder="Модел (напр. Golf)" value="@Model.Filters.Model" />
+                <input type="number" name="year" class="form-control form-control-sm" placeholder="Година (напр. 2015)" value="@Model.Filters.Year" />
+            </div>
+
+            <div class="filter-group">
+                <h3>Цена (€)</h3>
+                <div class="d-flex gap-2 align-items-center">
+                    <input type="number" name="minPrice" class="form-control form-control-sm" placeholder="От" value="@Model.Filters.MinPrice" />
+                    <span class="text-muted">—</span>
+                    <input type="number" name="maxPrice" class="form-control form-control-sm" placeholder="До" value="@Model.Filters.MaxPrice" />
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-brand w-100">Приложи филтри</button>
+            <a asp-action="Index" class="clear-filters-link">Изчисти филтрите</a>
+        </form>
+
+        <div>
+            @if (!Model.Products.Any())
+            {
+                <div class="empty-state">Няма намерени продукти по зададените филтри.</div>
+            }
+            else
+            {
+                <div class="product-grid">
+                    @foreach (var p in Model.Products)
+                    {
+                        <partial name="_ProductCard" model="p" />
+                    }
+                </div>
+            }
+
+            @functions {
+                string PageHref(ProductFilterInput f, int page)
+                {
+                    var parts = new List<string>();
+                    if (!string.IsNullOrWhiteSpace(f.Q)) parts.Add($"q={Uri.EscapeDataString(f.Q)}");
+                    if (!string.IsNullOrWhiteSpace(f.Category)) parts.Add($"category={Uri.EscapeDataString(f.Category)}");
+                    foreach (var b in f.Brand) parts.Add($"brand={Uri.EscapeDataString(b)}");
+                    if (!string.IsNullOrWhiteSpace(f.Make)) parts.Add($"make={Uri.EscapeDataString(f.Make)}");
+                    if (!string.IsNullOrWhiteSpace(f.Model)) parts.Add($"model={Uri.EscapeDataString(f.Model)}");
+                    if (f.Year.HasValue) parts.Add($"year={f.Year}");
+                    if (f.MinPrice.HasValue) parts.Add($"minPrice={f.MinPrice}");
+                    if (f.MaxPrice.HasValue) parts.Add($"maxPrice={f.MaxPrice}");
+                    parts.Add($"page={page}");
+                    return "/Products?" + string.Join("&", parts);
+                }
+            }
+
+            @if (Model.TotalPages > 1)
+            {
+                <div class="pagination-row">
+                    @for (var i = 1; i <= Model.TotalPages; i++)
+                    {
+                        <a href="@PageHref(Model.Filters, i)" class="page-link-btn @(i == Model.Filters.Page ? "active" : "")">@i</a>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>

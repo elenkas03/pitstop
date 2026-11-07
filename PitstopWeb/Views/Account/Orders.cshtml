@@ -1,0 +1,41 @@
+@model List<Order>
+@{
+    ViewData["Title"] = "Моите поръчки";
+
+    string StatusLabel(OrderStatus s) => s switch
+    {
+        OrderStatus.Pending => "Изчаква плащане",
+        OrderStatus.Paid => "Платена",
+        OrderStatus.Shipped => "Изпратена",
+        OrderStatus.Delivered => "Доставена",
+        OrderStatus.Cancelled => "Отказана",
+        _ => s.ToString(),
+    };
+}
+
+<div class="page-narrow">
+    <h1 class="section-title">Моите поръчки</h1>
+
+    @if (!Model.Any())
+    {
+        <p class="text-muted">Все още нямаш поръчки.</p>
+    }
+    else
+    {
+        <div class="d-flex flex-column gap-3">
+            @foreach (var order in Model)
+            {
+                <a asp-controller="Orders" asp-action="Confirmation" asp-route-id="@order.Id" class="order-row">
+                    <div>
+                        <div class="font-monospace small text-muted">@order.Id</div>
+                        <div class="small">@order.Items.Count продукта · @order.CreatedAt.ToString("dd.MM.yyyy")</div>
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <span class="badge-outline">@StatusLabel(order.Status)</span>
+                        <div class="fw-bold">@order.Total.ToString("N2") €</div>
+                    </div>
+                </a>
+            }
+        </div>
+    }
+</div>

@@ -1,0 +1,41 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Табло";
+}
+
+<h1 class="admin-title">Табло</h1>
+
+<div class="admin-stats-grid">
+    <div class="admin-stat-card">
+        <div class="admin-stat-value">@Model.ProductCount</div>
+        <div class="admin-stat-label">Продукти</div>
+    </div>
+    <div class="admin-stat-card">
+        <div class="admin-stat-value">@Model.OrderCount</div>
+        <div class="admin-stat-label">Поръчки</div>
+    </div>
+    <div class="admin-stat-card">
+        <div class="admin-stat-value">@Model.Revenue.ToString("N2") €</div>
+        <div class="admin-stat-label">Приходи</div>
+    </div>
+</div>
+
+<div class="admin-panel">
+    <h2 class="admin-panel-title">Ниска наличност</h2>
+    @if (!Model.LowStock.Any())
+    {
+        <p class="text-muted">Всички продукти имат достатъчна наличност.</p>
+    }
+    else
+    {
+        <ul class="admin-simple-list">
+            @foreach (var p in Model.LowStock)
+            {
+                <li>
+                    <span>@p.Name</span>
+                    <span class="text-brand fw-bold">@p.Stock бр. останали</span>
+                </li>
+            }
+        </ul>
+    }
+</div>

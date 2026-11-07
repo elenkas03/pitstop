@@ -1,0 +1,30 @@
+<footer class="site-footer">
+    <div class="site-footer-grid">
+        <div>
+            <div class="brand-logo">PIT<span class="text-brand">STOP</span></div>
+            <p class="site-footer-text">Качествени авточасти на едно място — доставка до всяка точка в страната.</p>
+        </div>
+        <div>
+            <h3 class="site-footer-heading">Информация</h3>
+            <ul class="site-footer-list">
+                <li><a asp-controller="Products" asp-action="Index">Продукти</a></li>
+                <li><a asp-controller="Cart" asp-action="Index">Количка</a></li>
+            </ul>
+        </div>
+        <div>
+            <h3 class="site-footer-heading">Моят акаунт</h3>
+            <ul class="site-footer-list">
+                <li><a asp-controller="Account" asp-action="Login">Вход</a></li>
+                <li><a asp-controller="Account" asp-action="Register">Регистрация</a></li>
+                <li><a asp-controller="Account" asp-action="Orders">Моите поръчки</a></li>
+            </ul>
+        </div>
+        <div>
+            <h3 class="site-footer-heading">Магазинът</h3>
+            <p class="site-footer-text">ул. Горно Броди 11<br />Пещера, България</p>
+        </div>
+    </div>
+    <div class="site-footer-bottom">
+        &copy; @DateTime.Now.Year PITSTOP. Всички права запазени.
+    </div>
+</footer>
